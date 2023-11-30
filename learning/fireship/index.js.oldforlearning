@@ -1,0 +1,50 @@
+// tutorial followed from https://www.youtube.com/watch?v=ENrzD9HAZK4
+
+console.log('Hello World')
+
+process.on('exit', function() { // the exit is the event, the function is the callback. When there's an 
+    console.log('Exit Callback was executed!') // exit event, it calls back to the function defined in process.on
+} )
+
+// you can also make your own events. This one is imported from the events module, which is built in to node.
+const { EventEmitter } = require('events');
+const eventEmitter = new EventEmitter(); //instantiates object eventEmitter from the EventEmitter class, think back to your java training from hs
+
+eventEmitter.on('lunch', () => { //creat4ed a new event called lunch, will execute the events inside. 
+    console.log('yum tasty lunch'); //() => is just a shorthand for the structure defined above
+})
+
+// we can now "emit" this event using the EventEmitter object we instantiated earlier.
+// this will trigger our lunch event just like exiting the program triggers the exit event
+eventEmitter.emit('lunch');
+eventEmitter.emit('lunch');
+
+
+// moving on to the file system part of the tutorial
+
+// import the readFile and readFileSync module from node
+const { readFileSync } = require('fs'); //think of any function called Sync as one that means blocking: it will completely finish before any more of your code is executed
+const txt = readFileSync('./hello.txt', 'utf8'); //reads the file at the path specified in the utf8 text encoding format
+console.log(txt);
+
+console.log('do this asap'); //will this happen asap in the current configuration? no! readFileSync finishes first
+
+// you can write a callback to do this without locking up all the processes (commented out as the async function is more preferrable)
+// const { readFile } = require('fs');
+// readFile('./hello.txt', 'utf8', (err, txt) => {
+//     console.log(txt)
+// })
+
+// console.log('do this ASAP');
+
+// this works, but there's usually a cleaner way to do this outside of callbacks. this comes from the promise namespace. (removed readFile from above)
+
+const { readFile } = require('fs').promises;
+
+async function hello() {
+    const file = await readFile('./hello.txt', 'utf8');
+}
+
+//creates the myModule object in this space, importing my own module from another file!
+const myModule = require('./my-module.js');
+console.log(myModule);
